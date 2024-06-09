@@ -53,7 +53,7 @@ flowFrame <- yourFlowFrame
 # Predict cell annotations
 annotatedFlowFrame <- predictCellAnnotation(model, flowFrame, "AnnotationColumnName")
 ```
-Example 4: Obtain Annotation Statistics
+Example 5: Obtain Annotation Statistics
 
 ```r
 # Assume you have an enriched flowFrame
