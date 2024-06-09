@@ -1,86 +1,64 @@
-library(flowCore)
-
-
 #' createLandmarkDataset
 #'
-#' @param landmarkRepertory
+#' Create a landmark dataset by combining flow cytometry data from multiple files.
 #'
-#' @return
+#' @param landmarkRepertory The directory containing the landmark files.
+#'
+#' @importFrom flowCore read.FCS
+#' @importFrom tools file_path_sans_ext
+#'
+#' @return A combined data frame representing the landmark dataset.
 #' @export
 #'
 #' @examples
-createLandmarkDataset <- function(landmarkRepertory){
+#' landmarkData <- createLandmarkDataset("/path/to/landmark/files")
+#'
+createLandmarkDataset <- function(landmarkRepertory) {
 
-  popLandmark<-list.files(landmarkRepertory)
+  # Get list of files in the landmark directorys
+  popLandmark <- list.files(landmarkRepertory)
 
-  # Loop to create training dataset
+  # Initialize an empty dataframe for the reference dataset
+  referenceDataset <- data.frame()
 
-  # Initialize dataframe
-  referenceDataset<-data.frame()
+  # Iterate over each file in the landmark directory
+  for (file in popLandmark) {
 
-  for (file in popLandmark){
+    # Read each FCS file
+    fcs <- read.FCS(file.path(landmarkRepertory, file))
 
-    fcs<-read.FCS(paste0(landmarkRepertory,"/",file))
+    # Extract markers from the FCS file
+    markers <- c()
+    fluo <- c()
 
-    # Extract markers of fcs file
+    for (marker in 1:nrow(fcs@parameters@data)) {
 
-    # Extract the part that contains the markers
-    data<-as.data.frame(fcs@parameters@data)
-
-    # Initialize marker vector
-    markers<-c()
-
-    # Initialize fluo vector
-    fluo <-c()
-
-    # Loop
-    for (marker in 1:nrow(data)){
-
-      # If  marker not contain description exemple for FSC-A/SSC-A
-      if (is.na(data[marker,"desc"]) ){
-
-        newMarker<-data[marker,"name"]
-
-        newFluo<-data[marker,"name"]
-
-      }else{
-
-        newMarker<-data[marker,"desc"]
-
-        newFluo<-data[marker,"name"]
+      if (is.na(fcs@parameters@data[marker, "desc"])) {
+        newMarker <- fcs@parameters@data[marker, "name"]
+        newFluo <- fcs@parameters@data[marker, "name"]
+      } else {
+        newMarker <- fcs@parameters@data[marker, "desc"]
+        newFluo <- fcs@parameters@data[marker, "name"]
       }
 
-      markers<-c(markers,newMarker)
-
-      fluo<-c(fluo,newFluo)
-
+      markers <- c(markers, newMarker)
+      fluo <- c(fluo, newFluo)
     }
 
-    # Add markers
-    markers<-as.matrix(markers)
-
-    markers<-as.vector(markers[,1])
-
-    fluo<-as.matrix(fluo)
-
-    fluo<-as.vector(fluo[,1])
-
-    names(fluo)<-markers
-
+    markers <- as.vector(markers)
+    fluo <- as.vector(fluo)
+    names(fluo) <- markers
 
     # Convert expression matrix to a dataframe
-    df<-as.data.frame(fcs@exprs)
-
+    df <- as.data.frame(fcs@exprs)
     colnames(df) <- names(fluo)
 
-    # Create new column containing poplabel
-    df$Pop<-rep(basename(file),nrow(df))
+    # Create a new column containing poplabel (file name without extension)
+    df$Pop <- rep(tools::file_path_sans_ext(file), nrow(df))
 
-    # Concatene dataframes
-    referenceDataset<-rbind(referenceDataset,df)
+    # Concatenate dataframes
+    referenceDataset <- rbind(referenceDataset, df)
   }
 
   return(referenceDataset)
-
 }
-# createLandmarkDataset("/home/maelleWorkspace/GatedCleanLandmarkFSCTransformed")

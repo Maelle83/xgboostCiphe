@@ -1,10 +1,10 @@
-Package: XGBoostCIPHE
-Title: What the Package Does (One Line, Title Case)
+Package: xgboostCiphe
+Title: Produces an xgboost model trained on cytometry data, and predicts cell annotations
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
+    person("Maelle", "Monier", , "maelle-marine.monier@inserm.fr", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: This package lets you create a training dataset from one or more annotated model files, build a supervised xgboost model, predict on new datasets based on the expressions of the markers chosen for training (features), and output population percentages.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8

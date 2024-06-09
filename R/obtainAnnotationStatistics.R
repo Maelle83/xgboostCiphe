@@ -1,56 +1,37 @@
 #' obtainAnnotationStatistics
 #'
-#' @param enrichedFlowFrame
-#' @param enrichColumnName
+#' Calculate annotation statistics from an enriched FlowFrame.
 #'
-#' @return
+#' @param enrichedFlowFrame A FlowFrame object that has been enriched with annotation information.
+#' @param enrichColumnName The name of the column containing the enrichment information.
+#'
+#'
+#' @importFrom dplyr mutate
+#' @importFrom flowCore exprs
+#'
+#' @return A data frame containing the population IDs, counts, and percentages.
 #' @export
 #'
 #' @examples
+#' stats <- obtainAnnotationStatistics(enrichedFlowFrame, "popIDXGBoost")
 #'
-
-
-obtainAnnotationStatistics <- function(enrichedFlowFrame, enrichColumnName){
+obtainAnnotationStatistics <- function(enrichedFlowFrame, enrichColumnName) {
 
   # Convert to a dataframe
   x <- as.data.frame(enrichedFlowFrame@exprs)
 
-  # Add informations of all pop
-  x <- table(x$popIDXGBoost)
+  # Create a frequency table for the specified column
+  x <- table(x[[enrichColumnName]])
 
   # Convert to a dataframe
-  x<-as.data.frame(x)
-  #
-  #   # Call the function to match label with popID
-  #   popLabel<-matchPopIDD()
-  #
-  #   labels<-c()
-  #
-  #   for (i in x$Var1){
-  #
-  #     for (j in 1:29){
-  #
-  #       if (i==j){
-  #
-  #         labels<-c(labels,popLabel[[j]])
-  #       }
-  #     }
-  #
-  #   }
-  #
-  #   # Add new label column
-  #   x$label <-labels
+  x <- as.data.frame(x)
 
   # Add percentage column
   x <- x %>%
-    mutate(Percentage = round(Freq/sum(Freq)*100,3))
+    mutate(Percentage = round(Freq / sum(Freq) * 100, 3))
 
-
-  # dataframe that contains xgboost results
-  results<-data.frame(popID=x$Var1, count=x$Freq,Percentage =x$Percentage)
-
+  # Create a dataframe that contains the results
+  results <- data.frame(popID = x$Var1, count = x$Freq, Percentage = x$Percentage)
 
   return(results)
-
-
 }
