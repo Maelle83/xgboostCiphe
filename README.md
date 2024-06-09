@@ -16,6 +16,7 @@ devtools::install_github("Maelle83/xgboostCiphe")
 ### Usage
 
  Here are some examples of how to use the main functions in the xgboostCiphe package.
+ 
  Example 1: Create a Landmark Dataset
 
 ```r
@@ -51,3 +52,14 @@ flowFrame <- yourFlowFrame
 
 # Predict cell annotations
 annotatedFlowFrame <- predictCellAnnotation(model, flowFrame, "AnnotationColumnName")
+```
+Example 4: Obtain Annotation Statistics
+
+```r
+# Assume you have an enriched flowFrame
+enrichedFlowFrame <- yourEnrichedFlowFrame
+
+# Get annotation statistics
+annotationStats <- obtainAnnotationStatistics(enrichedFlowFrame, "popIDXGBoost")
+```
+
