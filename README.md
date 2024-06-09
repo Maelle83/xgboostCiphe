@@ -1,6 +1,6 @@
 # xgboostCiphe
 
-This package provides tools for processing flow cytometry data and training models using XGBoost for cell population annotations.
+This package lets you create a training dataset from one or more annotated model files, build a supervised xgboost model, predict on new datasets based on the expressions of the markers chosen for training (features), and output population percentages.
 
 ## Installation
 
